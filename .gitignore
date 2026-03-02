@@ -1,0 +1,13 @@
+venv/
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+Backend/resumes.db
+Backend/uploaded_files/
+Backend/venv/
+Frontend/node_modules/
+Frontend/dist/
+.vscode/
