@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-const API_BASE = (window.location.hostname === 'localhost') 
-  ? 'http://localhost:8000' 
-  : 'http://localhost:8000'
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 
 function App() {
   const [currentJobId, setCurrentJobId] = useState(null)
@@ -131,7 +130,7 @@ function App() {
 
   const addFiles = (files) => {
     setSelectedResumeFiles(prev => {
-      const newFiles = files.filter(f => 
+      const newFiles = files.filter(f =>
         !prev.find(x => x.name === f.name && x.size === f.size)
       )
       return [...prev, ...newFiles]
@@ -219,13 +218,13 @@ function App() {
       const data = await resp.json()
       const processed = data.processed || 0
       const resultsList = data.results || []
-      
+
       if (processed === 0) {
         setUploaderStatus('⚠️ No resumes found. Upload resumes first.')
         setResults([])
       } else {
         // Results are already sorted by backend, but ensure they're sorted
-        const sortedResults = [...resultsList].sort((a, b) => 
+        const sortedResults = [...resultsList].sort((a, b) =>
           (b.score?.combined_score || 0) - (a.score?.combined_score || 0)
         )
         setResults(sortedResults)
@@ -274,14 +273,14 @@ function App() {
       setTrainingMetrics(data.metrics)
       setTrainingStatus('✅ Model trained successfully!')
       setTrainingFile(null)
-      
+
       // Reset file input
       const fileInput = document.getElementById('trainingFile')
       if (fileInput) fileInput.value = ''
-      
+
       // Check model status again
       await checkModelStatus()
-      
+
       // Clear previous results to force re-scoring with new model
       setResults([])
     } catch (err) {
@@ -332,7 +331,7 @@ function App() {
       const score = r.score || {}
       const combinedScore = score.combined_score || 0
       const modelScore = score.model_score || 0
-      
+
       // Color code based on score
       const getScoreColor = (score) => {
         if (score >= 0.7) return '#10b981' // green
@@ -341,13 +340,13 @@ function App() {
       }
 
       return (
-        <tr key={r.resume_id} style={{ 
-          backgroundColor: index % 2 === 0 ? '#fafbfc' : '#ffffff' 
+        <tr key={r.resume_id} style={{
+          backgroundColor: index % 2 === 0 ? '#fafbfc' : '#ffffff'
         }}>
           <td style={{ textAlign: 'center' }}>
-            <span style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
               justifyContent: 'center',
               width: '28px',
               height: '28px',
@@ -421,8 +420,8 @@ function App() {
     <div className="container">
       <header>
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="24" height="24" rx="6" fill="#f1f5f9"/>
-          <path d="M8 12h8M8 7h8M8 17h8" stroke="#0b5fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <rect width="24" height="24" rx="6" fill="#f1f5f9" />
+          <path d="M8 12h8M8 7h8M8 17h8" stroke="#0b5fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <div>
           <h1>Resume Screener</h1>
@@ -432,18 +431,18 @@ function App() {
 
       <div className="card" id="job-card">
         <label htmlFor="jobTitle">Job Title</label>
-        <input 
-          id="jobTitle" 
-          type="text" 
+        <input
+          id="jobTitle"
+          type="text"
           placeholder="Backend Python Developer"
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
         />
 
         <label style={{ marginTop: '12px' }}>Job Description (text OR upload file)</label>
-        <textarea 
-          id="jobDescription" 
-          rows="4" 
+        <textarea
+          id="jobDescription"
+          rows="4"
           placeholder="Paste job description here (or upload a file below)"
           value={jobDescription}
           onChange={(e) => setJobDescription(e.target.value)}
@@ -451,25 +450,25 @@ function App() {
 
         <div style={{ marginTop: '12px' }}>
           <label>Upload Job Description File (.txt / .pdf / .docx)</label>
-          <input 
-            id="jobFile" 
-            type="file" 
+          <input
+            id="jobFile"
+            type="file"
             accept=".pdf,.doc,.docx,.txt"
             onChange={(e) => setJobFile(e.target.files[0] || null)}
           />
         </div>
 
         <div style={{ display: 'flex', gap: '8px', marginTop: '14px' }}>
-          <button 
-            className="btn" 
+          <button
+            className="btn"
             id="createJobBtn"
             onClick={handleCreateJob}
             disabled={isCreating}
           >
             {isCreating ? 'Creating...' : 'Create Job'}
           </button>
-          <button 
-            className="btn secondary" 
+          <button
+            className="btn secondary"
             id="clearJobBtn"
             onClick={handleClearJob}
           >
@@ -483,21 +482,21 @@ function App() {
 
       <div className="card" style={{ marginTop: '18px' }}>
         <label>Upload Resumes (bulk)</label>
-        <div 
-          className="uploader" 
+        <div
+          className="uploader"
           tabIndex="0"
           onClick={() => document.getElementById('resumeFiles').click()}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          Drag & drop resumes here or click to select<br/>
+          Drag & drop resumes here or click to select<br />
           <span className="small muted">Supports multiple files: .pdf, .docx, .txt</span>
         </div>
-        <input 
-          id="resumeFiles" 
-          type="file" 
-          accept=".pdf,.doc,.docx,.txt" 
-          multiple 
+        <input
+          id="resumeFiles"
+          type="file"
+          accept=".pdf,.doc,.docx,.txt"
+          multiple
           style={{ display: 'none' }}
           onChange={handleFileSelect}
         />
@@ -513,8 +512,8 @@ function App() {
                   <div className="small muted">{humanSize(f.size)}</div>
                 </div>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <button 
-                    className="btn secondary" 
+                  <button
+                    className="btn secondary"
                     onClick={() => removeFile(idx)}
                   >
                     Remove
@@ -526,16 +525,16 @@ function App() {
         </div>
 
         <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
-          <button 
-            className="btn" 
+          <button
+            className="btn"
             id="uploadResumesBtn"
             onClick={handleUploadResumes}
             disabled={isUploading}
           >
             {isUploading ? 'Uploading...' : 'Upload Resumes'}
           </button>
-          <button 
-            className="btn secondary" 
+          <button
+            className="btn secondary"
             id="parseScoreBtn"
             onClick={handleParseScore}
             disabled={isProcessing}
@@ -561,16 +560,16 @@ function App() {
           {results.length > 0 && (
             <div className="center">
               <span className="small muted">Show top</span>
-              <select 
-              id="topN"
-              value={topN}
-              onChange={(e) => setTopN(parseInt(e.target.value))}
-              style={{ marginLeft: '8px', padding: '6px 10px' }}
-            >
-              <option>5</option>
-              <option>10</option>
-              <option>20</option>
-            </select>
+              <select
+                id="topN"
+                value={topN}
+                onChange={(e) => setTopN(parseInt(e.target.value))}
+                style={{ marginLeft: '8px', padding: '6px 10px' }}
+              >
+                <option>5</option>
+                <option>10</option>
+                <option>20</option>
+              </select>
             </div>
           )}
         </div>
@@ -585,7 +584,7 @@ function App() {
           <h2 style={{ margin: 0 }}>ML Model Training</h2>
           {modelStatus && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ 
+              <span style={{
                 display: 'inline-block',
                 width: '8px',
                 height: '8px',
@@ -598,7 +597,7 @@ function App() {
             </div>
           )}
         </div>
-        
+
         <div className="small muted" style={{ marginBottom: '16px' }}>
           Train the ML model with labeled resume data to improve scoring accuracy. The model uses TF-IDF vectorization and Logistic Regression.
         </div>
@@ -606,14 +605,14 @@ function App() {
         <div style={{ marginBottom: '16px' }}>
           <label>Upload Training Data (CSV)</label>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <input 
+            <input
               id="trainingFile"
-              type="file" 
+              type="file"
               accept=".csv"
               onChange={(e) => setTrainingFile(e.target.files[0] || null)}
               style={{ flex: 1 }}
             />
-            <button 
+            <button
               className="btn secondary"
               onClick={downloadSampleCSV}
               type="button"
@@ -627,10 +626,10 @@ function App() {
         </div>
 
         {trainingFile && (
-          <div style={{ 
-            padding: '12px', 
-            backgroundColor: '#f6f8fa', 
-            borderRadius: '8px', 
+          <div style={{
+            padding: '12px',
+            backgroundColor: '#f6f8fa',
+            borderRadius: '8px',
             marginBottom: '16px',
             display: 'flex',
             justifyContent: 'space-between',
@@ -640,7 +639,7 @@ function App() {
               <strong>{trainingFile.name}</strong>
               <div className="small muted">{humanSize(trainingFile.size)}</div>
             </div>
-            <button 
+            <button
               className="btn secondary"
               onClick={() => {
                 setTrainingFile(null)
@@ -655,7 +654,7 @@ function App() {
         )}
 
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <button 
+          <button
             className="btn"
             onClick={handleTrainModel}
             disabled={isTraining || !trainingFile}
@@ -663,9 +662,9 @@ function App() {
             {isTraining ? 'Training...' : 'Train Model'}
           </button>
           {trainingStatus && (
-            <div className="small" style={{ 
-              color: trainingStatus.includes('✅') ? '#10b981' : 
-                     trainingStatus.includes('⚠️') ? '#f59e0b' : '#ef4444',
+            <div className="small" style={{
+              color: trainingStatus.includes('✅') ? '#10b981' :
+                trainingStatus.includes('⚠️') ? '#f59e0b' : '#ef4444',
               fontWeight: '500'
             }}>
               {trainingStatus}
@@ -674,10 +673,10 @@ function App() {
         </div>
 
         {trainingMetrics && (
-          <div style={{ 
-            marginTop: '20px', 
-            padding: '16px', 
-            backgroundColor: '#f6f8fa', 
+          <div style={{
+            marginTop: '20px',
+            padding: '16px',
+            backgroundColor: '#f6f8fa',
             borderRadius: '8px',
             border: '1px solid #e6e9ef'
           }}>
@@ -711,7 +710,7 @@ function App() {
             {trainingMetrics.confusion_matrix && (
               <div style={{ marginTop: '16px' }}>
                 <div className="small muted" style={{ marginBottom: '8px' }}>Confusion Matrix</div>
-                <div style={{ 
+                <div style={{
                   display: 'inline-block',
                   padding: '8px 12px',
                   backgroundColor: 'white',
@@ -728,10 +727,10 @@ function App() {
         )}
 
         {modelStatus && modelStatus.is_trained && (
-          <div style={{ 
-            marginTop: '16px', 
-            padding: '12px', 
-            backgroundColor: '#ecfdf5', 
+          <div style={{
+            marginTop: '16px',
+            padding: '12px',
+            backgroundColor: '#ecfdf5',
             borderRadius: '8px',
             border: '1px solid #10b981'
           }}>

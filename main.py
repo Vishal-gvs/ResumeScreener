@@ -56,12 +56,13 @@ origins = [
     "http://127.0.0.1:5501",
     "http://localhost",
     "http://127.0.0.1",
+    "*"  # Allows all origins, necessary so your Vercel frontend can talk to it!
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

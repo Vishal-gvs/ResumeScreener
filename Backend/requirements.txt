@@ -11,3 +11,4 @@ pandas
 joblib
 nltk
 numpy
+psycopg2-binary

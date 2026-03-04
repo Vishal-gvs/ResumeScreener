@@ -25,8 +25,12 @@ except LookupError:
 
 from nltk.corpus import stopwords
 
-DB_URL = "sqlite:///./resumes.db"
-engine = create_engine(DB_URL, echo=False, connect_args={"check_same_thread": False})
+DB_URL = os.getenv("DATABASE_URL", "sqlite:///./resumes.db")
+if DB_URL.startswith("postgres://"):
+    DB_URL = DB_URL.replace("postgres://", "postgresql://", 1)
+
+connect_args = {"check_same_thread": False} if "sqlite" in DB_URL else {}
+engine = create_engine(DB_URL, echo=False, connect_args=connect_args)
 
 # create DB
 def create_db_and_tables():
@@ -56,6 +60,8 @@ origins = [
     "http://127.0.0.1:5501",
     "http://localhost",
     "http://127.0.0.1",
+    "https://automated-resume-screeining.vercel.app",
+    "https://automated-resume-screeining.vercel.app/",
 ]
 
 app.add_middleware(
@@ -66,9 +72,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-BASE_UPLOAD_DIR = "./uploaded_files"
 MODELS_DIR = "./models"
-os.makedirs(BASE_UPLOAD_DIR, exist_ok=True)
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 # load master skills
@@ -160,11 +164,6 @@ async def upload_resumes(job_id: int = Form(...), files: List[UploadFile] = File
     for f in files:
         try:
             text, tmp_path = extract_text_from_upload(f)
-            save_path = os.path.join(BASE_UPLOAD_DIR, f"{job_id}_{f.filename}")
-            
-            # Copy file to permanent location
-            with open(tmp_path, "rb") as src, open(save_path, "wb") as dst:
-                dst.write(src.read())
             
             resume = Resume(job_id=job_id, filename=f.filename, raw_text=text or "")
             with Session(engine) as session:
