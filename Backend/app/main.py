@@ -21,11 +21,20 @@ import pandas as pd
 try:
     nltk.data.find('corpora/stopwords')
 except LookupError:
-    nltk.download('stopwords', quiet=True)
+    try:
+        is_vercel_env = os.environ.get("VERCEL") == "1"
+        download_path = '/tmp' if is_vercel_env else None
+        nltk.download('stopwords', quiet=True, download_dir=download_path)
+        if is_vercel_env:
+            nltk.data.path.append('/tmp')
+    except Exception as e:
+        print("NLTK download error:", e)
 
 from nltk.corpus import stopwords
 
-DB_URL = os.getenv("DATABASE_URL", "sqlite:///./resumes.db")
+is_vercel = os.environ.get("VERCEL") == "1"
+default_db_path = "/tmp/resumes.db" if is_vercel else "./resumes.db"
+DB_URL = os.getenv("DATABASE_URL", f"sqlite:///{default_db_path}")
 if DB_URL.startswith("postgres://"):
     DB_URL = DB_URL.replace("postgres://", "postgresql://", 1)
 
@@ -61,7 +70,10 @@ app.add_middleware(
 )
 
 MODELS_DIR = "./models"
-os.makedirs(MODELS_DIR, exist_ok=True)
+try:
+    os.makedirs(MODELS_DIR, exist_ok=True)
+except OSError:
+    pass # Read-only file system on Vercel
 
 # load master skills
 SKILLS_MASTER = []
@@ -78,8 +90,11 @@ MODEL = None
 VECTORIZER = None
 
 def save_model_and_vectorizer(model, vectorizer):
-    joblib.dump(model, MODEL_PATH)
-    joblib.dump(vectorizer, VECTORIZER_PATH)
+    try:
+        joblib.dump(model, MODEL_PATH)
+        joblib.dump(vectorizer, VECTORIZER_PATH)
+    except Exception as e:
+        print("Error saving model (possibly read-only filesystem):", e)
 
 def load_model_and_vectorizer():
     global MODEL, VECTORIZER
