@@ -1,2 +1,0 @@
-# Resume Screener API Package
-

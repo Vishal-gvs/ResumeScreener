@@ -340,9 +340,7 @@ function App() {
       }
 
       return (
-        <tr key={r.resume_id} style={{
-          backgroundColor: index % 2 === 0 ? '#fafbfc' : '#ffffff'
-        }}>
+        <tr key={r.resume_id}>
           <td style={{ textAlign: 'center' }}>
             <span style={{
               display: 'inline-flex',
@@ -351,8 +349,9 @@ function App() {
               width: '28px',
               height: '28px',
               borderRadius: '50%',
-              backgroundColor: index < 3 ? '#0b5fff' : '#e6e9ef',
-              color: index < 3 ? 'white' : '#6b7280',
+              backgroundColor: index < 3 ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+              color: index < 3 ? '#a5b4fc' : '#94a3b8',
+              border: index < 3 ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
               fontSize: '13px',
               fontWeight: 'bold'
             }}>
@@ -401,7 +400,7 @@ function App() {
       <div style={{ overflowX: 'auto' }}>
         <table className="results-table">
           <thead>
-            <tr style={{ backgroundColor: '#f6f8fa' }}>
+            <tr>
               <th style={{ padding: '12px', fontWeight: '600' }}>Rank</th>
               <th style={{ padding: '12px', fontWeight: '600' }}>Candidate</th>
               <th style={{ padding: '12px', fontWeight: '600' }}>Skills Matched</th>
@@ -419,9 +418,9 @@ function App() {
   return (
     <div className="container">
       <header>
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="24" height="24" rx="6" fill="#f1f5f9" />
-          <path d="M8 12h8M8 7h8M8 17h8" stroke="#0b5fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="24" height="24" rx="8" fill="rgba(99, 102, 241, 0.15)" stroke="rgba(99, 102, 241, 0.3)" strokeWidth="1" />
+          <path d="M8 12h8M8 7h8M8 17h8" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <div>
           <h1>Resume Screener</h1>
@@ -627,9 +626,9 @@ function App() {
 
         {trainingFile && (
           <div style={{
-            padding: '12px',
-            backgroundColor: '#f6f8fa',
-            borderRadius: '8px',
+            padding: '16px',
+            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
             marginBottom: '16px',
             display: 'flex',
             justifyContent: 'space-between',
@@ -675,13 +674,13 @@ function App() {
         {trainingMetrics && (
           <div style={{
             marginTop: '20px',
-            padding: '16px',
-            backgroundColor: '#f6f8fa',
-            borderRadius: '8px',
-            border: '1px solid #e6e9ef'
+            padding: '24px',
+            backgroundColor: 'rgba(0, 0, 0, 0.15)',
+            borderRadius: '16px',
+            border: '1px solid rgba(255, 255, 255, 0.06)'
           }}>
-            <h3 style={{ fontSize: '14px', marginBottom: '12px', fontWeight: '600' }}>Training Metrics</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px' }}>
+            <h3 style={{ fontSize: '15px', marginBottom: '16px', fontWeight: '600', color: '#f1f5f9' }}>Training Metrics</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px' }}>
               <div>
                 <div className="small muted">Accuracy</div>
                 <div style={{ fontSize: '18px', fontWeight: '600', color: '#0b5fff' }}>
@@ -712,8 +711,10 @@ function App() {
                 <div className="small muted" style={{ marginBottom: '8px' }}>Confusion Matrix</div>
                 <div style={{
                   display: 'inline-block',
-                  padding: '8px 12px',
-                  backgroundColor: 'white',
+                  padding: '12px 16px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#e2e8f0',
                   borderRadius: '6px',
                   fontFamily: 'monospace',
                   fontSize: '12px'
@@ -729,12 +730,12 @@ function App() {
         {modelStatus && modelStatus.is_trained && (
           <div style={{
             marginTop: '16px',
-            padding: '12px',
-            backgroundColor: '#ecfdf5',
-            borderRadius: '8px',
-            border: '1px solid #10b981'
+            padding: '16px',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderRadius: '12px',
+            border: '1px solid rgba(16, 185, 129, 0.3)'
           }}>
-            <div className="small" style={{ color: '#065f46', fontWeight: '500' }}>
+            <div className="small" style={{ color: '#34d399', fontWeight: '500' }}>
               ✅ Model is active and will be used for scoring resumes. Model scores will now vary based on ML predictions instead of the 50% fallback.
             </div>
           </div>
