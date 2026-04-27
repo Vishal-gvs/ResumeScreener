@@ -52,24 +52,10 @@ def root():
         "docs": "API documentation is disabled. Use the React frontend at http://localhost:5173"
     }
 
-# CORS settings to allow local frontend
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174",
-    "http://localhost:5501",
-    "http://127.0.0.1:5501",
-    "http://localhost",
-    "http://127.0.0.1",
-    "https://automated-resume-screeining.vercel.app",
-    "https://automated-resume-screeining.vercel.app/",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
